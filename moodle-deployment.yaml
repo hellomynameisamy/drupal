@@ -1,23 +1,23 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: gazebo
+  name: moodle
   labels:
-    app: gazebo
+    app: moodle
 spec:
   ports:
     - port: 80
   selector:
-    app: gazebo
+    app: moodle
     tier: frontend
   type: LoadBalancer
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: g-pv-claim
+  name: m-pv-claim
   labels:
-    app: gazebo
+    app: moodle
 spec:
   accessModes:
     - ReadWriteOnce
@@ -28,40 +28,40 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gazebo
+  name: moodle
   labels:
-    app: gazebo
+    app: moodle
 spec:
   selector:
     matchLabels:
-      app: gazebo
+      app: moodle
       tier: frontend
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: gazebo
+        app: moodle
         tier: frontend
     spec:
       containers:
-      - image: gazebo:latest
-        name: gazebo
+      - image: moodle:latest
+        name: moodle
         env:
-        - name: GAZEBO_DB_HOST
-          value: gazebo-mysql
-        - name: GAZEBO_DB_PASSWORD
+        - name: MOODLE_DB_HOST
+          value: mooodle-mysql
+        - name: MOODLE_DB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: mysql-pass
               key: password
         ports:
         - containerPort: 80
-          name: gazebo
+          name: moodle
         volumeMounts:
-        - name: gazebo-persistent-storage
+        - name: moodle-persistent-storage
           mountPath: /var/www/html
       volumes:
-      - name: gazebo-persistent-storage
+      - name: moodle-persistent-storage
         persistentVolumeClaim:
-          claimName: g-pv-claim
+          claimName: m-pv-claim
