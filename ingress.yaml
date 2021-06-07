@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: gazebo-ingress
+  name: drupal-ingress
   annotations:
 spec:
   rules:
@@ -11,6 +11,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: gazebo
+            name: drupal
             port:
               number: 80
