@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: gazebo-mysql
+  name: moodle-mysql
   labels:
-    app: gazebo
+    app: moodle
 spec:
   ports:
     - port: 3306
   selector:
-    app: gazebo
+    app: moodle
     tier: mysql
   clusterIP: None
 ---
@@ -17,7 +17,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: mysql-pv-claim
   labels:
-    app: gazebo
+    app: mooodle
 spec:
   accessModes:
     - ReadWriteOnce
@@ -28,20 +28,20 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gazebo-mysql
+  name: moodle-mysql
   labels:
-    app: gazebo
+    app: moodle
 spec:
   selector:
     matchLabels:
-      app: gazebo
+      app: moodle
       tier: mysql
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: gazebo
+        app: moodle
         tier: mysql
     spec:
       containers:
