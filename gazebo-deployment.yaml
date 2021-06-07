@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gazebo
+  labels:
+    app: gazebo
+spec:
+  ports:
+    - port: 80
+  selector:
+    app: gazebo
+    tier: frontend
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: g-pv-claim
+  labels:
+    app: gazebo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gazebo
+  labels:
+    app: gazebo
+spec:
+  selector:
+    matchLabels:
+      app: gazebo
+      tier: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: gazebo
+        tier: frontend
+    spec:
+      containers:
+      - image: gazebo:latest
+        name: gazebo
+        env:
+        - name: GAZEBO_DB_HOST
+          value: gazebo-mysql
+        - name: GAZEBO_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-pass
+              key: password
+        ports:
+        - containerPort: 80
+          name: gazebo
+        volumeMounts:
+        - name: gazebo-persistent-storage
+          mountPath: /var/www/html
+      volumes:
+      - name: gazebo-persistent-storage
+        persistentVolumeClaim:
+          claimName: g-pv-claim
