@@ -4,4 +4,4 @@ secretGenerator:
   - password=ldsflkmblkdmsflksdflkmdlkmb29-f
 resources:
   - mysql-deployment.yaml
-  - moodle-deployment.yaml
+  - drupal-deployment.yaml
